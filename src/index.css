@@ -13,10 +13,21 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
+
+    --container-width: 530px;
 }
 
-body {
+html,
+body,
+#root {
     margin: 0;
+    height: 100%;
+}
+
+#root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (prefers-color-scheme: light) {
