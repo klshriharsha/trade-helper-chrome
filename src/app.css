@@ -1,5 +1,6 @@
 .container {
-    max-width: var(--container-width);
+    width: var(--container-width);
+    padding: 30px;
 }
 
 .align-left {

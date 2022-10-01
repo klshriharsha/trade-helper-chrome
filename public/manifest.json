@@ -11,5 +11,7 @@
         "16": "logo-16.png",
         "64": "logo-64.png",
         "128": "logo-128.png"
-    }
+    },
+    "permissions": ["tabs", "activeTab", "scripting"],
+    "host_permissions": ["https://www.cnbc.com/us-market-movers", "https://tinyurl.com/mtpzcucb"]
 }
