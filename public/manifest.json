@@ -1,0 +1,15 @@
+{
+    "name": "Trade Helper",
+    "description": "Finds the 2nd top gaining stock of the day and submits it to a form",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "Trade Helper"
+    },
+    "icons": {
+        "16": "logo-16.png",
+        "64": "logo-64.png",
+        "128": "logo-128.png"
+    }
+}
