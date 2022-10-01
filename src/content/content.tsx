@@ -31,9 +31,17 @@ export const findStock = ({ marketMoverTab, section, position }: FindStockParams
     const targetTab = Array.from(tabs).find(isTargetTab) as HTMLButtonElement | null
 
     if (targetTab) {
+        chrome.runtime.sendMessage({
+            type: 'progress',
+            data: 'switching tab',
+        })
         targetTab.click()
     }
 
+    chrome.runtime.sendMessage({
+        type: 'progress',
+        data: 'extracting stock information',
+    })
     // Wait for tab to load
     setTimeout(() => {
         // Market mover sections
@@ -45,8 +53,11 @@ export const findStock = ({ marketMoverTab, section, position }: FindStockParams
 
         // Communicate the target stock info to popup
         chrome.runtime.sendMessage({
-            name: targetStock?.querySelector(selectors.stockName)?.textContent,
-            gain: targetStock?.querySelector(selectors.stockGain)?.textContent,
+            type: 'result',
+            data: {
+                name: targetStock?.querySelector(selectors.stockName)?.textContent,
+                gain: targetStock?.querySelector(selectors.stockGain)?.textContent,
+            },
         })
     }, 1000)
 }

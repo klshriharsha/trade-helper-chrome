@@ -1,0 +1,11 @@
+.spinner {
+    display: inline;
+    vertical-align: middle;
+    animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotateZ(360deg);
+    }
+}

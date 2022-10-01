@@ -13,3 +13,14 @@
     padding: 10px 16px;
     width: 100%;
 }
+
+.btn__progress {
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.btn__progress img {
+    /* height: 20px; */
+    display: inline;
+    vertical-align: middle;
+}

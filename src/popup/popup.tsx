@@ -1,10 +1,16 @@
 import './popup.css'
 
+import { useState } from 'react'
+
+import Spinner from '../components/spinner'
 import { findStock, FindStockParams } from '../content/content'
 import { links } from '../utils/constants'
 
 function App() {
+    const [progress, setProgress] = useState('')
+
     const handleClick = async () => {
+        setProgress('navigating to CNBC')
         // Navigate to the URL
         const tab = await chrome.tabs.update({ url: links.marketMovers })
 
@@ -18,7 +24,12 @@ function App() {
 
             // Listen for messages from the content script
             chrome.runtime.onMessage.addListener(message => {
-                console.log({ message })
+                if (message.type === 'progress') {
+                    setProgress(message.data)
+                } else if (message.type === 'result') {
+                    console.log({ message })
+                    setProgress('')
+                }
             })
 
             // Inject content script
@@ -46,7 +57,14 @@ function App() {
                 </ul>
             </div>
             <button className="btn" onClick={handleClick}>
-                Run Script
+                {progress ? (
+                    <p className="btn__progress">
+                        <Spinner />
+                        &nbsp;&nbsp;{progress}
+                    </p>
+                ) : (
+                    'Run Script'
+                )}
             </button>
         </div>
     )
