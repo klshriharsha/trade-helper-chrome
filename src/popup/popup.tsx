@@ -17,19 +17,31 @@ function App() {
     const initiateExtractScript = async () => {
         setProgress('navigating to CNBC')
         // Navigate to the URL
-        const tab = await chrome.tabs.update({ url: links.marketMovers })
+        const tab = await chrome.tabs.update({ active: true, url: links.marketMovers })
+        const injectScript = (tabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
+            if (tabId === tab.id && changeInfo.status === 'complete') {
+                injectFindStockScript(tab)
+                chrome.tabs.onUpdated.removeListener(injectScript)
+            }
+        }
 
         // Wait for page to load
-        setTimeout(() => injectFindStockScript(tab), 5000)
+        chrome.tabs.onUpdated.addListener(injectScript)
     }
 
     const initiateSubmitScript = useCallback(async () => {
         setProgress('navigating to form')
         // Navigate to the URL
-        const tab = await chrome.tabs.update({ url: links.form })
+        const tab = await chrome.tabs.update({ active: true, url: links.form })
+        const injectScript = (tabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
+            if (tabId === tab.id && changeInfo.status === 'complete') {
+                injectSubmitStockInfoScript(tab, stock)
+                chrome.tabs.onUpdated.removeListener(injectScript)
+            }
+        }
 
         // Wait for page to load
-        setTimeout(() => injectSubmitStockInfoScript(tab, stock), 5000)
+        chrome.tabs.onUpdated.addListener(injectScript)
     }, [stock])
 
     // Submit stock information when it's available
