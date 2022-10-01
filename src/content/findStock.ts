@@ -53,10 +53,14 @@ export const findStock = ({ marketMoverTab, section, position }: FindStockParams
 
         // Communicate the target stock info to popup
         chrome.runtime.sendMessage({
-            type: 'result',
+            type: 'findStock:result',
             data: {
+                section,
+                position,
+                marketMoverTab,
                 name: targetStock?.querySelector(selectors.stockName)?.textContent,
                 gain: targetStock?.querySelector(selectors.stockGain)?.textContent,
+                time: Date.now(),
             },
         })
     }, 1000)

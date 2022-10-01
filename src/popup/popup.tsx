@@ -1,62 +1,76 @@
 import './popup.css'
 
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
+import Check from '../components/check'
 import Spinner from '../components/spinner'
-import { findStock, FindStockParams } from '../content/content'
+import Steps from '../components/steps'
+import { Stock } from '../content/submitStockInfo'
 import { links } from '../utils/constants'
+import { injectFindStockScript, injectSubmitStockInfoScript } from '../utils/contentScripts'
 
 function App() {
+    const [done, setDone] = useState(false)
     const [progress, setProgress] = useState('')
+    const [stock, setStock] = useState<Stock | null>(null)
 
-    const handleClick = async () => {
+    const initiateExtractScript = async () => {
         setProgress('navigating to CNBC')
         // Navigate to the URL
         const tab = await chrome.tabs.update({ url: links.marketMovers })
 
         // Wait for page to load
-        setTimeout(async () => {
-            const params: FindStockParams = {
-                marketMoverTab: 'nasdaq',
-                section: 'top gainers',
-                position: 2,
+        setTimeout(() => injectFindStockScript(tab), 5000)
+    }
+
+    const initiateSubmitScript = useCallback(async () => {
+        setProgress('navigating to form')
+        // Navigate to the URL
+        const tab = await chrome.tabs.update({ url: links.form })
+
+        // Wait for page to load
+        setTimeout(() => injectSubmitStockInfoScript(tab, stock), 5000)
+    }, [stock])
+
+    // Submit stock information when it's available
+    useEffect(() => {
+        if (stock) {
+            initiateSubmitScript()
+        }
+    }, [stock, initiateSubmitScript])
+
+    useEffect(() => {
+        // Listen for messages from the content script
+        chrome.runtime.onMessage.addListener(message => {
+            if (message.type === 'progress') {
+                setProgress(message.data)
+            } else if (message.type === 'findStock:result') {
+                setStock(message.data)
+                setProgress(`${message.data.name} is at position ${message.data.position} today`)
+            } else if (message.type === 'submitStockInfo:result') {
+                setProgress('')
+                setDone(true)
+                setTimeout(() => {
+                    setDone(false)
+                }, 5000)
             }
+        })
+    }, [])
 
-            // Listen for messages from the content script
-            chrome.runtime.onMessage.addListener(message => {
-                if (message.type === 'progress') {
-                    setProgress(message.data)
-                } else if (message.type === 'result') {
-                    console.log({ message })
-                    setProgress('')
-                }
-            })
-
-            // Inject content script
-            await chrome.scripting.executeScript({
-                target: { tabId: tab.id ?? 1 },
-                func: findStock,
-                args: [params],
-            })
-        }, 5000)
+    if (done) {
+        return (
+            <div className="container container--center">
+                <Check style={{ color: 'green', fontSize: '5em' }} />
+                <h2>Submitted succesfully</h2>
+                <div className="container__auto-dismiss-counter" />
+            </div>
+        )
     }
 
     return (
         <div className="container">
-            <div className="align-left">
-                <h1>Steps executed by the script</h1>
-                <ul>
-                    <li>
-                        Navigate to <a href={links.marketMovers}>CNBC US Market Movers</a> page
-                    </li>
-                    <li>Switch to NASDAQ tab</li>
-                    <li>Find the 2nd top gaining stock of the day and extract it's information</li>
-                    <li>
-                        Navigate to a <a href={links.form}>form</a>, fill relevant details and submit
-                    </li>
-                </ul>
-            </div>
-            <button className="btn" onClick={handleClick}>
+            <Steps />
+            <button className="btn" onClick={initiateExtractScript} disabled={!!progress}>
                 {progress ? (
                     <p className="btn__progress">
                         <Spinner />

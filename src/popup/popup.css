@@ -1,26 +1,30 @@
 .container {
     width: var(--container-width);
+    height: var(--container-height);
+    position: relative;
     padding: 30px;
 }
 
-.align-left {
-    text-align: left;
+.container--center {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.btn {
-    cursor: pointer;
-    font-size: 1.2em;
-    padding: 10px 16px;
-    width: 100%;
+.container__auto-dismiss-counter {
+    bottom: 0;
+    height: 8px;
+    position: absolute;
+    background-color: mediumpurple;
+    animation: count 5000ms linear forwards;
 }
 
-.btn__progress {
-    margin: 0;
-    text-transform: capitalize;
-}
-
-.btn__progress img {
-    /* height: 20px; */
-    display: inline;
-    vertical-align: middle;
+@keyframes count {
+    0% {
+        width: 0%;
+    }
+    100% {
+        width: 100%;
+    }
 }

@@ -14,7 +14,12 @@
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
 
-    --container-width: 530px;
+    --container-width: 500px;
+    --container-height: 280px;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 html,
@@ -34,10 +39,39 @@ body,
         color: #213547;
         background-color: #ffffff;
     }
-    a:hover {
-        color: #747bff;
-    }
-    button {
-        background-color: #f9f9f9;
-    }
+}
+
+/* Icon */
+.inline-icon {
+    display: inline;
+    vertical-align: middle;
+}
+
+/* Button */
+.btn {
+    border: 0;
+    color: white;
+    background-color: mediumpurple;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 10px 16px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.btn__progress {
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.btn__progress[disabled],
+.btn__progress:disabled {
+    color: inherit;
+    font-weight: normal;
+}
+
+.btn__progress img {
+    display: inline;
+    vertical-align: middle;
 }

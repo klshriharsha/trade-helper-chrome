@@ -1,6 +1,4 @@
 .spinner {
-    display: inline;
-    vertical-align: middle;
     animation: spin 800ms linear infinite;
 }
 
